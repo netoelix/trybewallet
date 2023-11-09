@@ -4,7 +4,7 @@ import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { actionFetchCurrency, addExpanded } from '../redux/actions';
 
-export type GlobalState = {
+type GlobalState = {
   wallet: {
     currencies: string[];
     isLoading: boolean;
@@ -31,9 +31,10 @@ function WalletForm() {
     },
     [dispatch],
   );
-  function addExpense() {
+  function addExpense(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
+    event.preventDefault();
     const expense = {
-      id: expenses.length,
+      id: 0,
       value,
       description,
       currencyChange,
@@ -41,7 +42,7 @@ function WalletForm() {
       tag,
     };
     dispatch(addExpanded(expense));
-    setValue('0');
+    setValue('');
     setDescription('');
     setCurrency('');
     setMethod('');
