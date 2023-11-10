@@ -2,28 +2,22 @@ import { useSelector, useDispatch } from 'react-redux';
 import { useEffect, useState } from 'react';
 import { AnyAction } from 'redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { actionFetchCurrency, addExpanded } from '../redux/actions';
+import { actionFetchCurrency, actionFetchEchange, addExpanded } from '../redux/actions';
+import { RootState } from '../types';
 
-type GlobalState = {
-  wallet: {
-    currencies: string[];
-    isLoading: boolean;
-    expenses: [];
-  };
-};
-
-type AppDispatch = ThunkDispatch<GlobalState, unknown, AnyAction>;
+type AppDispatch = ThunkDispatch<RootState, unknown, AnyAction>;
 
 function WalletForm() {
   const dispatch: AppDispatch = useDispatch();
-  const data = useSelector((state: GlobalState) => state.wallet.currencies);
-  const isLoading = useSelector((state: GlobalState) => state.wallet.isLoading);
-  const expenses = useSelector((state: GlobalState) => state.wallet.expenses);
+  const data = useSelector((state: RootState) => state.wallet.currencies);
+  const isLoading = useSelector((state: RootState) => state.wallet.isLoading);
+  const expenses = useSelector((state: RootState) => state.wallet.expenses);
   const [value, setValue] = useState('');
   const [description, setDescription] = useState('');
   const [currencyChange, setCurrency] = useState('USD');
   const [method, setMethod] = useState('Dinheiro');
   const [tag, setTag] = useState('Alimentação');
+  const [contId, setContId] = useState(0);
 
   useEffect(
     () => {
@@ -33,8 +27,9 @@ function WalletForm() {
   );
   function addExpense(event: React.MouseEvent<HTMLButtonElement, MouseEvent>) {
     event.preventDefault();
+    setContId((prevState) => prevState + 1);
     const expense = {
-      id: 0,
+      id: contId,
       value,
       description,
       currencyChange,
@@ -42,11 +37,12 @@ function WalletForm() {
       tag,
     };
     dispatch(addExpanded(expense));
-    setValue('');
+    dispatch(actionFetchEchange());
+    setValue('0');
     setDescription('');
-    setCurrency('');
-    setMethod('');
-    setTag('');
+    setCurrency('USD');
+    setMethod('Dinheiro');
+    setTag('Alimentação');
   }
 
   return (

@@ -53,3 +53,38 @@ export const addExpanded = (expenses: object) => ({
     expenses,
   },
 });
+
+export const REQUEST_SECOND_ECHANGE = 'REQUEST_SECOND_ECHANGE';
+export const RECEIVE_SECOND_ECHANGE = 'RECEIVE_SECOND_ECHANGE';
+export const FAILED_SECOND_REQUEST = 'FAILED_SECOND_REQUEST';
+
+export const requestEchange = () => ({
+  type: REQUEST_SECOND_ECHANGE,
+});
+
+export const receiveEchange = (
+  currencies: string[],
+) => ({
+  type: RECEIVE_SECOND_ECHANGE,
+  payload: {
+    currencies,
+  },
+});
+
+export const failedSecondRequest = () => ({
+  type: FAILED_SECOND_REQUEST,
+});
+
+export const actionFetchEchange = () => {
+  return async (dispatch: Dispatch) => {
+    dispatch(requestEchange());
+    try {
+      const data = await getCurrency();
+      const currencies = Object.keys(data);
+      dispatch(receiveEchange(currencies));
+    } catch (error) {
+      console.log(error);
+      dispatch(failedSecondRequest());
+    }
+  };
+};
