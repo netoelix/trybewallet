@@ -26,8 +26,13 @@ function Header() {
         {`Olá: ${userEmail}`}
       </span>
       <br />
+      <span>
+
+        Total das despesas:
+        {' '}
+      </span>
       <span data-testid="total-field">
-        {`Total das despesas: ${total.toFixed(2)}`}
+        {total.toFixed(2)}
       </span>
       <span data-testid="header-currency-field">BRL</span>
     </div>

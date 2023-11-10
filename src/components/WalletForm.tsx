@@ -7,9 +7,9 @@ function WalletForm() {
   const { currencies, isLoading } = useSelector((state: State) => state.wallet);
   const INITIAL_STATE = {
     value: '',
-    currency: '',
-    method: '',
-    tag: '',
+    currency: 'USD',
+    method: 'Dinheiro',
+    tag: 'Alimentação',
     description: '',
   };
 
@@ -82,14 +82,7 @@ function WalletForm() {
             required
           >
             {currencies.map((currencie) => (
-              <option
-                data-testid="currency-input"
-                value={ currencie }
-                key={ currencie }
-              >
-                {currencie}
-
-              </option>
+              <option value={ currencie } key={ currencie }>{currencie}</option>
             ))}
           </select>
         </label>
