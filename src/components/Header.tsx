@@ -1,34 +1,35 @@
 import { useSelector } from 'react-redux';
 import { useEffect, useState } from 'react';
-import { RootState } from '../types';
+import { State } from '../types';
 
 function Header() {
-  const email = useSelector((state: RootState) => state.user.email);
-  const expenses = useSelector((state: RootState) => state.wallet.expenses);
+  const userEmail = useSelector((state: State) => state.user.email);
+  const expenses = useSelector((state: State) => state.wallet.expenses);
 
-  const [total, setTotal] = useState<number>(0);
-
-  // useEffect(() => {
-  //   const sumTotal = () => {
-  //     return expenses.reduce((accumulator: number, expense: any) => {
-  //       const exchangeRate = expense.exchangeRates[expense.currency]?.ask;
-  //       const value = typeof expense.value === 'string'
-  //         ? Number(expense.value) : expense.value;
-  //       return accumulator + (value * Number(exchangeRate));
-  //     }, 0);
-  //   };
-  //   setTotal(sumTotal());
-  // }, [expenses]);
+  const [total, setTotal] = useState(0);
+  useEffect(() => {
+    const sumTotal = () => {
+      return expenses.reduce((acc, expense) => {
+        return acc + (Number(expense.value) * Number(expense
+          .exchangeRates[expense.currency].ask));
+      }, 0);
+    };
+    setTotal(sumTotal());
+  }, [expenses]);
 
   return (
     <div>
-      <h1 data-testid="email-field">{email}</h1>
-      <ul data-testid="total-field">
-        <li>{total.toFixed(2)}</li>
-      </ul>
-      <ul data-testid="header-currency-field">
-        <li>BRL</li>
-      </ul>
+      <div>
+        <h1>TRYBE WALLET</h1>
+      </div>
+      <span data-testid="email-field">
+        {`Olá: ${userEmail}`}
+      </span>
+      <br />
+      <span data-testid="total-field">
+        {`Total das despesas: ${total.toFixed(2)}`}
+      </span>
+      <span data-testid="header-currency-field">BRL</span>
     </div>
   );
 }

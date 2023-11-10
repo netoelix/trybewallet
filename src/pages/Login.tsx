@@ -17,9 +17,9 @@ function Login() {
 
   return (
     <div>
-      <h1>Login</h1>
+      <h1>LOGIN NO TRYBEWALLET</h1>
       <label htmlFor="email">
-        EMAIL
+        EMAIL:
       </label>
       <input
         type="text"
@@ -28,7 +28,7 @@ function Login() {
         onChange={ (e) => setEmail(e.target.value) }
       />
       <label htmlFor="password">
-        Senha
+        Senha:
       </label>
       <input
         type="password"

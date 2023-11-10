@@ -1,90 +1,77 @@
-// Coloque aqui suas actions
-
-import { Dispatch } from 'redux';
 import getCurrency from '../../services/currencyAPI';
+import { Dispatch } from '../../types';
 
 export const LOGIN = 'LOGIN_USER';
+export const CURRENCY_REQUEST = 'CURRENCIE_REQUEST';
+export const CURRENCY_REQUEST_SUCCESSFUL = 'CURRENCIE_REQUEST_SUCCESSFUL';
+export const CURRENCY_REQUEST_FAILED = 'CURRENCIE_REQUEST_FAILED';
+export const SUBMIT_FORM = 'SUBMIT_FORM';
+export const EXCHANGE_REQUEST = 'EXCHANGE_REQUEST';
+export const EXCHANGE_SUCCESSFUL = 'EXCHANGE_REQUEST_SUCCESSFUL';
+export const EXCHANGE_FAILED = 'EXCHANGE_REQUEST_FAILED';
 
 export const login = (email: string) => ({
   type: LOGIN,
-  email,
+  payload: email,
 });
 
-export const REQUEST_CURRENCY = 'REQUEST_CURRENCY';
-export const RECEIVE_CURRENCY = 'RECEIVE_CURRENCY';
-export const FAILED_REQUEST = 'FAILED_REQUEST';
+function requestCurrencies() {
+  return { type: CURRENCY_REQUEST };
+}
 
-export const requestCurrency = () => ({
-  type: REQUEST_CURRENCY,
+export const currenciesSucsess = (currencies: object) => ({
+  type: CURRENCY_REQUEST_SUCCESSFUL,
+  payload: currencies,
 });
 
-export const receiveCurrency = (
-  currencies: string[],
-) => ({
-  type: RECEIVE_CURRENCY,
-  payload: {
-    currencies,
-  },
-});
+function currenciesFailed() {
+  return {
+    type: CURRENCY_REQUEST_FAILED,
+  };
+}
 
-export const failedRequest = () => ({
-  type: FAILED_REQUEST,
-});
-
-export const actionFetchCurrency = () => {
+export const actionFetchCurrencies = () => {
   return async (dispatch: Dispatch) => {
-    dispatch(requestCurrency());
+    dispatch(requestCurrencies());
     try {
-      const data = await getCurrency();
-      const currencies = Object.keys(data);
-      dispatch(receiveCurrency(currencies));
+      const currencies = await getCurrency();
+      dispatch(currenciesSucsess(Object.keys(currencies)));
     } catch (error) {
-      console.log(error);
-      dispatch(failedRequest());
+      console.log('ALGO DEU ERRADO', error);
+      dispatch(currenciesFailed());
     }
   };
 };
 
-export const ADD_EXPENSE = 'ADD_EXPENSE';
-
-export const addExpanded = (expenses: object) => ({
-  type: ADD_EXPENSE,
-  payload: {
-    expenses,
-  },
+const submitWallet = (wallet: object) => ({
+  type: SUBMIT_FORM,
+  payload: wallet,
 });
 
-export const REQUEST_SECOND_ECHANGE = 'REQUEST_SECOND_ECHANGE';
-export const RECEIVE_SECOND_ECHANGE = 'RECEIVE_SECOND_ECHANGE';
-export const FAILED_SECOND_REQUEST = 'FAILED_SECOND_REQUEST';
+function requestExchange() {
+  return { type: EXCHANGE_REQUEST };
+}
 
-export const requestEchange = () => ({
-  type: REQUEST_SECOND_ECHANGE,
+export const exchangeSucsess = (exchangeRates: object) => ({
+  type: EXCHANGE_SUCCESSFUL,
+  payload: exchangeRates,
 });
 
-export const receiveEchange = (
-  currencies: string[],
-) => ({
-  type: RECEIVE_SECOND_ECHANGE,
-  payload: {
-    currencies,
-  },
-});
+function exchangeRatesFailed() {
+  return {
+    type: EXCHANGE_FAILED,
+  };
+}
 
-export const failedSecondRequest = () => ({
-  type: FAILED_SECOND_REQUEST,
-});
-
-export const actionFetchEchange = () => {
+export const actionFetchExchange = (wallet: object) => {
   return async (dispatch: Dispatch) => {
-    dispatch(requestEchange());
+    dispatch(requestExchange());
     try {
-      const data = await getCurrency();
-      const currencies = Object.keys(data);
-      dispatch(receiveEchange(currencies));
+      const exchangeRatesData = await getCurrency();
+      dispatch(submitWallet({ ...wallet, exchangeRates: exchangeRatesData }));
     } catch (error) {
-      console.log(error);
-      dispatch(failedSecondRequest());
+      console.log('ALGO DEU ERRADO', error);
+      dispatch(exchangeRatesFailed());
     }
   };
 };

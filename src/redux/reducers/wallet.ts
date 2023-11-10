@@ -1,30 +1,43 @@
-import { WalletType } from '../../types';
-import { ADD_EXPENSE, FAILED_REQUEST, RECEIVE_CURRENCY,
-  REQUEST_CURRENCY } from '../actions';
-
-// Esse reducer será responsável por tratar o todas as informações relacionadas as despesas
+import { AnyAction } from 'redux';
+import { Wallet } from '../../types';
+import { CURRENCY_REQUEST, CURRENCY_REQUEST_FAILED,
+  CURRENCY_REQUEST_SUCCESSFUL, EXCHANGE_FAILED,
+  EXCHANGE_REQUEST, EXCHANGE_SUCCESSFUL, SUBMIT_FORM } from '../actions';
 
 const INITIAL_STATE = {
   currencies: [],
+  expenses: [],
+  editor: false,
+  isLoading: false,
 };
 
-const walletReducer = (state = INITIAL_STATE, action: WalletType) => {
+const walletReducer = (state: Wallet = INITIAL_STATE, action: AnyAction) => {
   switch (action.type) {
-    case REQUEST_CURRENCY:
+    case CURRENCY_REQUEST || EXCHANGE_REQUEST:
       return {
         ...state,
         isLoading: true,
       };
-    case RECEIVE_CURRENCY:
+    case CURRENCY_REQUEST_SUCCESSFUL:
       return {
         ...state,
-        currencies: action.payload.currencies,
+        isLoading: false,
+        currencies: action.payload,
+      };
+    case CURRENCY_REQUEST_FAILED || EXCHANGE_FAILED:
+      return {
+        ...state,
         isLoading: false,
       };
-    case FAILED_REQUEST:
+    case SUBMIT_FORM:
       return {
         ...state,
-        isLoading: false,
+        expenses: [...state.expenses, action.payload],
+      };
+    case EXCHANGE_SUCCESSFUL:
+      return {
+        ...state,
+        exchangeRates: action.payload,
       };
     default:
       return state;
@@ -32,22 +45,3 @@ const walletReducer = (state = INITIAL_STATE, action: WalletType) => {
 };
 
 export default walletReducer;
-
-const INITIAL_STATE_SECOND = {
-  expenses: [],
-};
-
-export const walletReducerSecond = (
-  state = INITIAL_STATE_SECOND,
-  action: WalletType,
-) => {
-  switch (action.type) {
-    case ADD_EXPENSE:
-      return {
-        ...state,
-        expenses: [...state.expenses, action.payload.expenses],
-      };
-    default:
-      return state;
-  }
-};
